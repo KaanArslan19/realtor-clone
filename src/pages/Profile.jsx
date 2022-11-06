@@ -73,11 +73,11 @@ export default function Profile() {
             <p className="flex items-center">
               Do you want to change your name ?
               <span
-                onClick={() => {  //have to call it one time otherwise it gives infinite loop
+                onClick={() => {
+                  //have to call it one time otherwise it gives infinite loop
                   changeDetail && onSubmit();
                   setchangeDetail((prevState) => !prevState);
                 }}
-              
                 className="text-red-600 hover:text-red-700 transition ease-in-out duration-200 ml-1 cursor-pointer"
               >
                 {changeDetail ? "Apply change" : "Edit"}
