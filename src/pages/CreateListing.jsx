@@ -84,8 +84,32 @@ export default function CreateListing() {
       );
       const data = await response.json();
       console.log(data);
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      //if the first condition is null then give 0
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+
+      location = data.status === "ZERO_RESULTS" && undefined; //if this condition is true set the location "undefined".
+
+      if (location === undefined || location.includes("undefined")) {
+        // whether if its string or var
+        setloading(false);
+        toast.error("please enter a correct address");
+        return;
+      }
+    } else {
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
     }
+    const imgUrls = await Promise.all(
+      [...images]
+        .map((image) => storeImage(image))
+        .catch((error) => {
+          setloading(false);
+          toast.error("Images not uploaded");
+        }) //gives each image then use function to store them
+    );
   }
+
   if (loading) {
     return <Spinner />;
   }
