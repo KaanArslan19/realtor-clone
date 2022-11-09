@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
 
 export default function CreateListing() {
+  const [geolocationEnabled, setgeolocationEnabled] = useState(true);
+  const [loading, setloading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -13,6 +17,9 @@ export default function CreateListing() {
     offer: true,
     regularPrice: 0,
     discountedPrice: 0,
+    latitude: 0,
+    longitude: 0,
+    images: {},
   });
   const {
     type,
@@ -26,12 +33,66 @@ export default function CreateListing() {
     offer,
     regularPrice,
     discountedPrice,
+    latitude,
+    longitude,
+    images,
   } = formData;
-  function onChange() {}
+  function onChange(e) {
+    let boolean = null;
+    if (e.target.value === "true") {
+      boolean = true;
+    }
+
+    if (e.target.value === "false") {
+      boolean = false;
+    }
+    //Files
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }));
+    }
+    //String/Boolean/Number
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value, // if the boolean is null then go with string or number
+      }));
+    }
+  }
+  async function onSubmit(e) {
+    e.preventDefault();
+    setloading(true);
+    if (discountedPrice >= regularPrice) {
+      setloading(false);
+      toast.error("Discounted price needs to be less than regular price");
+      return;
+    }
+    if (images.length > 6) {
+      setloading(false);
+      toast.error("Maximum 6 images are allowed");
+      return;
+    }
+
+    //geocoding API is enabled in console.cloud.google for this project ---> .env.local file created to make api_key private ---> if you have a environmental variable you need to restart the project
+    let geolocation = {};
+    let location;
+    if (geolocationEnabled) {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+      );
+      const data = await response.json();
+      console.log(data);
+    }
+  }
+  if (loading) {
+    return <Spinner />;
+  }
   return (
     <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
-      <form>
+      <form onSubmit={onSubmit}>
         <p className="text-lg mt-6 font-semibold">Sell/Rent</p>
         <div className="flex">
           <button
@@ -51,7 +112,7 @@ export default function CreateListing() {
           <button
             type="button"
             id="type"
-            value="sale"
+            value="rent"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
               type === "sale"
@@ -165,8 +226,39 @@ export default function CreateListing() {
           onChange={onChange}
           placeholder="Address"
           required
-          className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6"
+          className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 text center mb-6"
         />
+        {!geolocationEnabled && (
+          <div className="flex space-x-6 justify-start mb-6">
+            <div className="">
+              <p className="text-lg font-semibold ">Latitude</p>
+              <input
+                type="number"
+                id="latitude"
+                value={latitude}
+                onChange={onChange}
+                required
+                min="-90"
+                max="90"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 "
+              />
+            </div>
+
+            <div className="">
+              <p className="text-lg font-semibold ">Longitude</p>
+              <input
+                type="number"
+                id="longitude"
+                value={longitude}
+                onChange={onChange}
+                required
+                min="-180"
+                max="180"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 "
+              />
+            </div>
+          </div>
+        )}
 
         <p className="text-lg font-semibold">Description</p>
         <textarea
