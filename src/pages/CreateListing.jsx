@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CreateListing() {
+  const auth = getAuth();
   const [geolocationEnabled, setgeolocationEnabled] = useState(true);
   const [loading, setloading] = useState(false);
   const [formData, setFormData] = useState({
@@ -74,8 +83,8 @@ export default function CreateListing() {
       toast.error("Maximum 6 images are allowed");
       return;
     }
-
     //geocoding API is enabled in console.cloud.google for this project ---> .env.local file created to make api_key private ---> if you have a environmental variable you need to restart the project
+
     let geolocation = {};
     let location;
     if (geolocationEnabled) {
@@ -90,7 +99,7 @@ export default function CreateListing() {
 
       location = data.status === "ZERO_RESULTS" && undefined; //if this condition is true set the location "undefined".
 
-      if (location === undefined || location.includes("undefined")) {
+      if (location === undefined ) {
         // whether if its string or var
         setloading(false);
         toast.error("please enter a correct address");
@@ -100,16 +109,53 @@ export default function CreateListing() {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
     }
+    async function storeImage(image) {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`; //npm i uuid for random character genarator
+        const storageRef = ref(storage, filename);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        // Listen for state changes, errors, and completion of the upload.
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+          reject(error)
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    }
     const imgUrls = await Promise.all(
       [...images]
-        .map((image) => storeImage(image))
+        .map((image) => storeImage(image)))
         .catch((error) => {
           setloading(false);
           toast.error("Images not uploaded");
-        }) //gives each image then use function to store them
+        } //gives each image then use function to store them
     );
+    console.log(imgUrls);
   }
 
+ 
   if (loading) {
     return <Spinner />;
   }
