@@ -162,7 +162,10 @@ export default function CreateListing() {
       imgUrls,
       geolocation,
       timestamp: serverTimestamp(),
+<<<<<<< HEAD
       userRef: auth.currentUser.uid,
+=======
+>>>>>>> 99677e0dcf8b9fffbf945d8d9afef6dfd1442e4a
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
