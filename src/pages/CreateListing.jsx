@@ -9,8 +9,12 @@ import {
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {db} from "../firebase"
+import { useNavigate } from "react-router";
 
 export default function CreateListing() {
+  const navigate = useNavigate();
   const auth = getAuth();
   const [geolocationEnabled, setgeolocationEnabled] = useState(true);
   const [loading, setloading] = useState(false);
@@ -73,7 +77,8 @@ export default function CreateListing() {
   async function onSubmit(e) {
     e.preventDefault();
     setloading(true);
-    if (discountedPrice >= regularPrice) {
+    if (+discountedPrice >= +regularPrice) //+ sign added because sometimes it consider them as a string value.
+    {
       setloading(false);
       toast.error("Discounted price needs to be less than regular price");
       return;
@@ -99,7 +104,7 @@ export default function CreateListing() {
 
       location = data.status === "ZERO_RESULTS" && undefined; //if this condition is true set the location "undefined".
 
-      if (location === undefined ) {
+      if (location === undefined) {
         // whether if its string or var
         setloading(false);
         toast.error("please enter a correct address");
@@ -133,7 +138,7 @@ export default function CreateListing() {
             }
           },
           (error) => {
-          reject(error)
+            reject(error);
           },
           () => {
             // Upload completed successfully, now we can get the download URL
@@ -145,17 +150,31 @@ export default function CreateListing() {
       });
     }
     const imgUrls = await Promise.all(
-      [...images]
-        .map((image) => storeImage(image)))
-        .catch((error) => {
-          setloading(false);
-          toast.error("Images not uploaded");
-        } //gives each image then use function to store them
+      [...images].map((image) => storeImage(image))
+    ).catch(
+      (error) => {
+        setloading(false);
+        toast.error("Images not uploaded");
+      } //gives each image then use function to store them
     );
-    console.log(imgUrls);
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+      userRef: auth.currentUser.uid,
+    };
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    delete formDataCopy.latitude;
+    delete formDataCopy.longitude;
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    setloading(false);
+    toast.success("Listing created");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+
   }
 
- 
   if (loading) {
     return <Spinner />;
   }
