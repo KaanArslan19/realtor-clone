@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import OAuth from '../components/OAuth';
+
 import key from "../images/key.jpeg";
 
 export default function ForgotPassword() {

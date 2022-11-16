@@ -6,7 +6,7 @@ import OAuth from '../components/OAuth';
 import key from "../images/key.jpeg";
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { toast } from 'react-toastify';
-import { async } from '@firebase/util';
+
 import { useNavigate } from 'react-router';
 
 export default function SignIn() {
