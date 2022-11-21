@@ -70,7 +70,7 @@ export default function Category() {
           data: doc.data(),
         });
       });
-      setListings((prevState)=>[...prevState, ...listings]);
+      setListings((prevState) => [...prevState, ...listings]);
       setLoading(false);
     } catch (error) {
       toast.error("Could not fetch listing");
@@ -79,7 +79,9 @@ export default function Category() {
 
   return (
     <div className="max-w-6xl mx-auto px-3">
-      <h1 className="text-3xl text-center mt-6 font-bold mb-6">{params.categoryName === "rent" ? "Places for rent" : "Places for sale"}</h1>
+      <h1 className="text-3xl text-center mt-6 font-bold mb-6">
+        {params.categoryName === "rent" ? "Places for rent" : "Places for sale"}
+      </h1>
       {loading ? (
         <Spinner />
       ) : listings && listings.length > 0 ? (
@@ -107,7 +109,12 @@ export default function Category() {
           )}
         </>
       ) : (
-        <p>There are no current offers</p>
+        <p>
+          There are no current{" "}
+          {params.categoryName === "rent"
+            ? "places for rent"
+            : "places for sale"}
+        </p>
       )}
     </div>
   );
