@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {AiFillEyeInvisible, AiFillEye} from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
-import key from "../images/key.jpeg";
+import key from "../images/key.png";
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { toast } from 'react-toastify';
 
@@ -39,7 +39,7 @@ export default function SignIn() {
 
   }
   return (
-    <section>
+    <section >
       <h1 className="text-3xl text-center mt-6 font-bold ">Sign In</h1>
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto" >
         <div className="md:2-[67%] lg:w-[50%] mb-12 md:mb-6">
@@ -70,7 +70,7 @@ export default function SignIn() {
               <Link to="/sign-up" className='text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-2'>Register</Link>
             </p>
             <p>
-              <Link to="/forgot-password" className='text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out '>Forgot Password?</Link>
+              <Link to="/forgot-password" className='text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out ml-2 '>Forgot Password?</Link>
             </p>
           </div>
             <button className='w-full bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-blue-700 transiton duration-150 ease-in-out hover:shadow-lg active:bg-blue-800' type='submit'>SIGN IN
