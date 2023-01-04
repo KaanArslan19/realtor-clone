@@ -99,7 +99,7 @@ export default function Listing() {
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             {listing.type === "rent" ? " / month" : ""}
           </p>
-          <p className="flex items-center mt-6 mb-3 font-semibold  ">
+          <p className="flex items-center mt-6 mb-3   ">
             <FaMapMarkerAlt className="text-green-700 mr-1" />
             {listing.address}
           </p>

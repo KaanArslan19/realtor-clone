@@ -39,14 +39,16 @@ export default function Profile() {
       [e.target.id]: e.target.value,
     }));
   }
+  console.log(formData)
 
   async function onSubmit() {
     try {
-      if (auth.currentUser.displayName !== name) {
+      if (auth.currentUser.displayName !== formData.name) {
         //update the display name in firebase
         await updateProfile(auth.currentUser, {
-          displayname: name,
+          displayName: formData.name,
         });
+       
 
         //update the name in firestore
         const docRef = doc(db, "users", auth.currentUser.uid);

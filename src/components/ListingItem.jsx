@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Moment from "react-moment";
+
 import { MdLocationOn } from "react-icons/md";
 import {FaTrash} from "react-icons/fa";
 import {MdEdit} from "react-icons/md";
-import moment from "moment";
+
 
 
 export default function ListingItem({ listing, id, onEdit, onDelete}) {
@@ -21,17 +21,17 @@ export default function ListingItem({ listing, id, onEdit, onDelete}) {
         />
     
     
-        <div className="absolute top-2 left-2 bg-[#3377cc] text-white uppercase text-xs font-semibold rounded-md px-2 py-1 shadow-lg"  >
+        <div className="absolute top-2 left-2 bg-[#a9b388] text-white uppercase text-xs font-semibold rounded-md px-2 py-1 shadow-lg"  >
           {listing.timestamp.toDate().toString().slice(3,15)}     
          </div>
         {/* in case it is null we should protect it */}
         <div className="w-full p-[10px]">
           <div className="flex items-center space-x-1">
-            <MdLocationOn className="h-4 w-4 text-green-600" />
-            <p className="font-semibold text-sm mb-[2px] text-gray-600 truncate">{listing.address}</p>
+            <MdLocationOn className="h-4 w-4 text-[#a9b388]" />
+            <p className=" text-sm mb-[2px] text-gray-600 truncate">{listing.address}</p>
           </div>
-          <p className="font-semibold m-0 text-xl truncate ">{listing.name}</p>
-          <p className="text-[#457b9d] mt-2 font-semibold">
+          <p className=" m-0 text-xl truncate ">{listing.name}</p>
+          <p className="text-[#7f8fa6] mt-2 font-semibold">
             {listing.offer
               ? listing.discountedPrice
                   .toString()

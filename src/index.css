@@ -1,18 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,300;0,400;0,700;1,500&family=Montserrat:wght@300;400;500;700&family=Outfit:wght@400;500;700&family=Playfair+Display:wght@400;500;700&family=Syne&display=swap');
 
 body {
-    background-color: rgb(240, 253,244);
+    font-family: "Bitter", sans-serif;
+    
+    background-color: #f0eee9;
 }
 /* Swiper Style */
 .swiper-button-next:after,
 .swiper-button-prev:after{
-    color: #a8dadc;
+    color: #a9b388;
 }
 
 .swiper-pagination-progressbar .swiper-pagination-progressbar-fill{
-    background: #a8dadc !important;
+    background: #f5ecd2 !important;
 }
 /* For Chrome */
 html::-webkit-scrollbar{
